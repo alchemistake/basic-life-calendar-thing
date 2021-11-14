@@ -1,0 +1,81 @@
+<html>
+
+<head>
+    <link rel="stylesheet" href="https://meyerweb.com/eric/tools/css/reset/reset.css">
+    <style>
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(52, 1fr);
+            width: 100%;
+            height: 100%;
+        }
+
+        .black {
+            background-color: rgba(0, 0, 0, 1);
+            border-style: solid;
+            border-bottom-width: 1px;
+            border-right-width: 1px;
+            border-color: rgba(128, 128, 128, 1);
+        }
+
+        .white {
+            background-color: rgba(255, 255, 255, 1);
+            border-style: solid;
+            border-bottom-width: 1px;
+            border-right-width: 1px;
+            border-color: rgba(128, 128, 128, 1);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="grid-container"></div>
+</body>
+<script>
+    function days(seconds) {
+        return Math.ceil(seconds / (1000 * 3600 * 24));
+    }
+
+    function dates(bd) {
+        birthday = new Date(bd);
+        today = new Date();
+        deathday = new Date(birthday.getFullYear() + 75, birthday.getMonth(), birthday.getDate());
+
+        livedDays = days(today.getTime() - birthday.getTime());
+        willDays = days(deathday.getTime() - today.getTime());
+
+        livedWeek = (livedDays - livedDays % 7) / 7;
+        livedDiv = '<div class="black"></div>'.repeat(livedWeek);
+
+        pageCompletion = (livedDays + willDays)
+        pageCompletion = (pageCompletion - pageCompletion % 7) / 7;
+        if (pageCompletion % 52 > 0) {
+            pageCompletion += 52 - pageCompletion % 52;
+        }
+
+        willDiv = '<div class="white"></div>'.repeat(pageCompletion - livedWeek);
+
+        calendar = livedDiv + willDiv;
+
+        document.getElementsByClassName("grid-container")[0].innerHTML = calendar;
+    }
+
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+
+    bd = urlParams.get('birthday');
+
+    if (bd) {
+        dates(bd);
+    }
+    else {
+        document.body.innerHTML = `<form onsubmit="dateEntered()">
+            <label for="start">Your Birtday:</label>
+            <input type="date" id="birthday" name="birthday">
+            <input type="submit">
+        </form>
+        <p>You can bookmark the link after setting up the date</p>`;
+    }
+</script>
+
+</html>
